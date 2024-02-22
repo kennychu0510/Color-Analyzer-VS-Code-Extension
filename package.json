@@ -1,0 +1,106 @@
+{
+  "name": "ColorManager",
+  "displayName": "Color Manager",
+  "description": "VS Code Extension for managing colors used in a project",
+  "version": "1.0.3",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "icon": "media/logo.png",
+  "categories": [
+    "Other"
+  ],
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "activationEvents": [
+    "onView:ColorManager-sidebar"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ColorManager-sidebar-view",
+          "title": "Color Manager",
+          "icon": "media/color-palette-menu.png"
+        }
+      ]
+    },
+    "views": {
+      "ColorManager-sidebar-view": [
+        {
+          "type": "webview",
+          "id": "ColorManager-sidebar",
+          "name": "Color Manager",
+          "icon": "media/color-palette-menu.svg",
+          "contextualTitle": "ColorManager"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "ColorManager.extractSelectionIntoStyleSheet",
+        "title": "Color Manager: Extract Selection into Style sheet"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npx vitest run && npm run test && npm run package",
+    "compile": "webpack",
+    "watch": "concurrently \"rollup -c -w\" \"webpack --mode development --watch\" \"npm run test-watch\"",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "test-compile": "tsc -p ./",
+    "test-watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test",
+    "unit-test": "npx vitest",
+    "verify": "npx vitest run && npm run test"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.22.10",
+    "@babel/traverse": "^7.22.10",
+    "@babel/types": "^7.22.10",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-node-resolve": "^11.0.1",
+    "@rollup/plugin-typescript": "^8.1.0",
+    "@tsconfig/svelte": "^1.0.10",
+    "@types/glob": "^7.1.3",
+    "@types/lodash": "^4.14.202",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "14.x",
+    "@types/polka": "^0.5.3",
+    "@types/sinon": "^17.0.3",
+    "@types/vscode": "^1.60.0",
+    "@typescript-eslint/eslint-plugin": "^4.26.0",
+    "@typescript-eslint/parser": "^4.26.0",
+    "@vscode/test-cli": "^0.0.4",
+    "@vscode/test-electron": "^2.3.9",
+    "cheerio": "^1.0.0-rc.12",
+    "concurrently": "^6.5.1",
+    "eslint": "^7.27.0",
+    "glob": "^7.1.7",
+    "mocha": "^8.4.0",
+    "rollup": "^2.3.4",
+    "rollup-plugin-svelte": "^6.0.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "sinon": "^17.0.1",
+    "svelte": "^3.42.6",
+    "svelte-check": "^2.2.6",
+    "svelte-preprocess": "^4.9.4",
+    "ts-loader": "^9.2.2",
+    "typescript": "^4.3.2",
+    "vitest": "^0.34.2",
+    "vscode": "*",
+    "vscode-extension-tester": "^7.0.0",
+    "vscode-test": "^1.5.2",
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.0"
+  },
+  "license": "Apache-2.0",
+  "publisher": "KennyChu"
+}
