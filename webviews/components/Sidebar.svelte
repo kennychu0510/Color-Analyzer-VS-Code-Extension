@@ -65,7 +65,6 @@
   </div>
   <ColorUsageInProject title={'Current Project'} colorUsed={colorUsedInProject} projectDir={projectDir} />
   <ColorUsageInFile title={'Current File'} colorUsed={colorUsedInFile} />
-  <button on:click={testing}>Testing</button>
 </div>
 
 <style>

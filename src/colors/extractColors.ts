@@ -39,10 +39,3 @@ rows.each((idx, item) => {
     decimal: decimal,
   });
 });
-
-
-// const colorsMap = new Map(JSON.parse(colorsJSON));
-// fs.writeFileSync(path.join(__dirname, 'colors_by_name.json'), JSON.stringify([...colors_by_name]), 'utf8');
-// fs.writeFileSync(path.join(__dirname, 'colors_by_hex.json'), JSON.stringify([...colors_by_hex]), 'utf8');
-// fs.writeFileSync(path.join(__dirname, 'colors_by_dec.json'), JSON.stringify([...colors_by_dec]), 'utf8');
-// const colorByNamesArray = Array.from(colors_by_name.keys());

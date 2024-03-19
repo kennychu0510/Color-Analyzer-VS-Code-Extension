@@ -2,7 +2,7 @@
   "name": "ColorManager",
   "displayName": "Color Manager",
   "description": "VS Code Extension for managing colors used in a project",
-  "version": "1.0.3",
+  "version": "1.0.0",
   "engines": {
     "vscode": "^1.60.0"
   },
@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/kennychu0510/Color-Manager-VS-Code-Extension"
   },
   "activationEvents": [
     "onView:ColorManager-sidebar"
@@ -47,7 +47,7 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npx vitest run && npm run test && npm run package",
+    "vscode:prepublish": "npx vitest run && npm run package",
     "compile": "webpack",
     "watch": "concurrently \"rollup -c -w\" \"webpack --mode development --watch\" \"npm run test-watch\"",
     "package": "webpack --mode production --devtool hidden-source-map",
