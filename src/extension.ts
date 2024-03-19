@@ -10,10 +10,12 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.onDidChangeActiveTextEditor((editor) => {
       if (!editor) return
       sidebarProvider._editor = editor;
-      sidebarProvider.updateWebviewForColorUsed();
+      sidebarProvider.updateWebviewForColorUsedInFile();
+      sidebarProvider.updateWebviewForColorUsedInProject();
     }),
     vscode.workspace.onDidSaveTextDocument((event) => {
-      sidebarProvider.updateWebviewForColorUsed();
+      sidebarProvider.updateWebviewForColorUsedInFile();
+      sidebarProvider.updateWebviewForColorUsedInProject();
     }),
     // vscode.window.onDidChangeTextEditorSelection((event) => {
     //   if (event.textEditor && vscode.window.activeTextEditor && event.textEditor.document === vscode.window.activeTextEditor.document) {
