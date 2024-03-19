@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.0.5] - 2024-03-19
+- Clean up unused commands
+
 ## [1.0.4] - 2024-03-19
 - Added color usage count in color used in file
 

@@ -1,8 +1,8 @@
 {
   "name": "ColorAnalyzer",
   "displayName": "Color Analyzer",
-  "description": "VS Code Extension for managing colors used in a project",
-  "version": "1.0.4",
+  "description": "VS Code Extension for analyzing colors used in a project",
+  "version": "1.0.5",
   "engines": {
     "vscode": "^1.60.0"
   },
@@ -23,7 +23,7 @@
       "activitybar": [
         {
           "id": "ColorAnalyzer-sidebar-view",
-          "title": "Color Manager",
+          "title": "Color Analyzer",
           "icon": "media/color-palette-menu.png"
         }
       ]
@@ -33,18 +33,12 @@
         {
           "type": "webview",
           "id": "ColorAnalyzer-sidebar",
-          "name": "Color Manager",
+          "name": "Color Analyzer",
           "icon": "media/color-palette-menu.svg",
           "contextualTitle": "ColorAnalyzer"
         }
       ]
     },
-    "commands": [
-      {
-        "command": "ColorAnalyzer.extractSelectionIntoStyleSheet",
-        "title": "Color Manager: Extract Selection into Style sheet"
-      }
-    ],
     "configuration": {
       "type": "object",
       "title": "Color Analyzer",
