@@ -41,7 +41,7 @@ export function getColorUsageInDir(dirPath: string): ColorUsedInFile[] {
   return result;
 }
 
-const ColorRegex = /(?:#|0x)(?:[a-f0-9]{3}|[a-f0-9]{6})\b|(?:rgb|hsl)a?\([^,]*,[^,]*,[^,]*(?:,[^,\)]*)?\)/gi
+const ColorRegex = /(?:#|0x)(?:[a-f0-9]{3}|[a-f0-9]{6})\b|(?:rgb|hsl)a?\((?:\d{1,3},\s*){2}\d{1,3}(?:,\s*\d{1,3})?\)/gi
 const ColorByNameRegex = new RegExp(`(?<![.])\\b(${color_name_array.join('|')})\\b`, 'gi')
 
 export function getColorUsedInContent(fileContent: string): string[] {

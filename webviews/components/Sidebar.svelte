@@ -6,6 +6,7 @@
 
   $: colorUsedInProject = {};
   $: colorUsedInFile = {};
+  $: projectDir = '';
 
   function reload() {
     // send message to the extension asking for the selected text
@@ -39,13 +40,14 @@
         case 'onReceiveColorsUsedInProject':
           if (message.value) {
             const data = JSON.parse(message.value);
-            colorUsedInProject = parseColorUsage(data);
+            colorUsedInProject = parseColorUsage(data.colorUsed);
+            projectDir = data.projectDir;
           }
           break;
         case 'onReceiveColorsUsedInFile':
           if (message.value) {
             const data = JSON.parse(message.value);
-            console.log({data})
+            console.log({ data });
             colorUsedInFile = parseColorUsage(data);
           }
           break;
@@ -61,9 +63,8 @@
     <h1>Color Usage Summary</h1>
     <Reload {reload} />
   </div>
-  <ColorUsageInProject title={'Current Project'} colorUsed={colorUsedInProject} />
+  <ColorUsageInProject title={'Current Project'} colorUsed={colorUsedInProject} projectDir={projectDir} />
   <ColorUsageInFile title={'Current File'} colorUsed={colorUsedInFile} />
-  <button on:click={testing}>Testing</button>
 </div>
 
 <style>

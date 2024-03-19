@@ -33,7 +33,15 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           break;
         case 'searchForColor':
           const color = data.value;
-          await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: color, isRegex: true });
+          await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: color });
+          await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
+          break;
+        case 'goToColor':
+          const filePath = data.value.path;
+          const uri = vscode.Uri.file(filePath);
+          await vscode.commands.executeCommand('vscode.open', uri);
+          await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: data.value.color });
+          await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
           break;
       }
     });
@@ -44,7 +52,10 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     if (!colorUsed || colorUsed.length === 0) return;
     this._view?.webview.postMessage({
       type: 'onReceiveColorsUsedInProject',
-      value: JSON.stringify(colorUsed),
+      value: JSON.stringify({
+        projectDir: vscode.workspace.workspaceFolders?.[0].uri.fsPath,
+        colorUsed,
+      }),
     });
   }
 
