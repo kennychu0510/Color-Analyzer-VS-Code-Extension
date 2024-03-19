@@ -17,45 +17,6 @@ export function activate(context: vscode.ExtensionContext) {
       sidebarProvider.updateWebviewForColorUsedInFile();
       sidebarProvider.updateWebviewForColorUsedInProject();
     }),
-    // vscode.window.onDidChangeTextEditorSelection((event) => {
-    //   if (event.textEditor && vscode.window.activeTextEditor && event.textEditor.document === vscode.window.activeTextEditor.document) {
-    //     const selection = sidebarProvider.getTextFromSelection();
-    //     sidebarProvider.setSelection(selection);
-    //   }
-    // }),
-    // vscode.commands.registerCommand('ColorManager.extractSelectionIntoStyleSheet', (newStyleName = '', rootStyle = '') => {
-    //   if (sidebarProvider._editor?.selection.isEmpty) {
-    //     vscode.window.showErrorMessage('No text selected');
-    //     return;
-    //   }
-    //   if (!checkSelectionIsValidStyle(sidebarProvider.selection)) {
-    //     vscode.window.showErrorMessage('Invalid style selected');
-    //     return;
-    //   }
-    //   sidebarProvider.handleExtractSelectionIntoStyleSheet(newStyleName, rootStyle);
-    // }),
-    // vscode.commands.registerCommand('ColorManager.removeUnusedStyles', () => {
-    //   if (!sidebarProvider._editor) {
-    //     vscode.window.showErrorMessage('No active text editor');
-    //     return;
-    //   }
-    //   if (sidebarProvider.styleList.length === 0) {
-    //     vscode.window.showErrorMessage('No styles found');
-    //     return;
-    //   }
-    //   sidebarProvider.handleRemoveUnusedStyles(sidebarProvider._editor, sidebarProvider.styleList);
-    // }),
-    // vscode.commands.registerCommand('ColorManager.copyStylesFromSelection', () => {
-    //   sidebarProvider.handleCopyStylesFromSelection();
-    // }),
-    // vscode.workspace.onDidChangeConfiguration((e) => {
-    //   if (e.affectsConfiguration('ColorManager')) {
-    //     sidebarProvider.updateExtensionConfig();
-    //   }
-    // }),
-    // vscode.commands.registerCommand('ColorManager.cleanStylesForFolder', (selectedDir: vscode.Uri | undefined) => {
-    //   sidebarProvider.handleCleanStylesForFolder(selectedDir);
-    // }),
   ];
   subscriptions.forEach((item) => context.subscriptions.push(item));
 }
