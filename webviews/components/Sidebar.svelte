@@ -5,11 +5,19 @@
   import Reload from './Reload.svelte';
 
   $: colorUsedInProject = {};
+  $: status = {
+    colorUsedInProject: false,
+    colorUsedInFile: false,
+  }
   $: colorUsedInFile = {};
   $: projectDir = '';
 
   function reload() {
     // send message to the extension asking for the selected text
+    status = {
+      colorUsedInProject: false,
+      colorUsedInFile: false,
+    }
     tsvscode.postMessage({ type: 'onFetchColorUsed', value: '' });
   }
 
@@ -42,13 +50,20 @@
             const data = JSON.parse(message.value);
             colorUsedInProject = parseColorUsage(data.colorUsed);
             projectDir = data.projectDir;
+            status = {
+              ...status,
+              colorUsedInProject: true,
+            }
           }
           break;
         case 'onReceiveColorsUsedInFile':
           if (message.value) {
             const data = JSON.parse(message.value);
-            console.log({ data });
             colorUsedInFile = parseColorUsage(data);
+            status = {
+              ...status,
+              colorUsedInFile: true,
+            }
           }
           break;
       }
@@ -61,10 +76,10 @@
 <div>
   <div class="headerContainer">
     <h1>Color Usage Summary</h1>
-    <Reload {reload} />
+    <Reload {reload} /> 
   </div>
-  <ColorUsageInProject title={'Current Project'} colorUsed={colorUsedInProject} projectDir={projectDir} />
-  <ColorUsageInFile title={'Current File'} colorUsed={colorUsedInFile} />
+  <ColorUsageInProject title={'Current Project'} colorUsed={colorUsedInProject} projectDir={projectDir} doneUpdate={status.colorUsedInProject} />
+  <ColorUsageInFile title={'Current File'} colorUsed={colorUsedInFile} doneUpdate={status.colorUsedInFile}/>
 </div>
 
 <style>

@@ -46,21 +46,22 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   }
 
   public updateWebviewForColorUsedInProject() {
-    const colorUsed = this.getColorUsedInProject();
-    if (!colorUsed || colorUsed.length === 0) return;
+    const projectDirPath = vscode.workspace.workspaceFolders?.[0].uri.fsPath
+    if (!projectDirPath) return
+    const colorUsed = this.getColorUsedInProject(projectDirPath);
     this._view?.webview.postMessage({
       type: 'onReceiveColorsUsedInProject',
       value: JSON.stringify({
-        projectDir: vscode.workspace.workspaceFolders?.[0].uri.fsPath,
+        projectDir: projectDirPath,
         colorUsed,
       }),
     });
   }
 
   public updateWebviewForColorUsedInFile() {
-    const colorUsed = this.getColorsUsedInEditor();
     const path = vscode.window.activeTextEditor?.document.uri.fsPath;
-    if (!colorUsed || colorUsed.length === 0 || !path) return;
+    if (!path) return;
+    const colorUsed = this.getColorsUsedInEditor();
     this._view?.webview.postMessage({
       type: 'onReceiveColorsUsedInFile',
       value: JSON.stringify([
@@ -72,8 +73,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     });
   }
 
-  public getColorUsedInProject() {
-    const projectDirPath = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
+  public getColorUsedInProject(projectDirPath: string) {
     if (!projectDirPath) return [];
     const result = getColorUsageInDir(projectDirPath, getExtensions());
     return result;
