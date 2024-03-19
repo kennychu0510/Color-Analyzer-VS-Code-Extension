@@ -9,7 +9,7 @@
     colorUsedInProject: false,
     colorUsedInFile: false,
   }
-  $: colorUsedInFile = {};
+  $: colorUsedInFile = new Map();
   $: projectDir = '';
 
   function reload() {
@@ -25,7 +25,7 @@
     tsvscode.postMessage({ type: 'testing', value: '' });
   }
 
-  function parseColorUsage(data: { filePath: string; colorUsed: string[] }[]) {
+  function parseColorUsageForProject(data: { filePath: string; colorUsed: string[] }[]) {
     const colorFilePathMap: { [color: string]: string[] } = {};
 
     data.forEach((item: any) => {
@@ -48,7 +48,7 @@
         case 'onReceiveColorsUsedInProject':
           if (message.value) {
             const data = JSON.parse(message.value);
-            colorUsedInProject = parseColorUsage(data.colorUsed);
+            colorUsedInProject = parseColorUsageForProject(data.colorUsed);
             projectDir = data.projectDir;
             status = {
               ...status,
@@ -59,7 +59,7 @@
         case 'onReceiveColorsUsedInFile':
           if (message.value) {
             const data = JSON.parse(message.value);
-            colorUsedInFile = parseColorUsage(data);
+            colorUsedInFile = new Map(data.colorUsage);
             status = {
               ...status,
               colorUsedInFile: true,

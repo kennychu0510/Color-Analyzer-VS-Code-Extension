@@ -13,8 +13,8 @@ describe('Extract colors in file', () => {
     rgb(1,1,1,1,1)
     `;
     const colorUsage = getColorUsedInContent(input);
-    expect(colorUsage).toContain('rgb(111,111,111,111)');
-    expect(colorUsage.length).toBe(1)
+    expect(Array.from(colorUsage.keys())).toContain('rgb(111,111,111,111)');
+    expect(colorUsage.size).toBe(1)
   });
 
   test('scenario 1', () => {
@@ -23,8 +23,8 @@ describe('Extract colors in file', () => {
     rgb(1,1,1,1,1)
     `;
     const colorUsage = getColorUsedInContent(input);
-    expect(colorUsage).toContain('red');
-    expect(colorUsage.length).toBe(1)
+    expect(Array.from(colorUsage.keys())).toContain('red');
+    expect(colorUsage.size).toBe(1)
   });
 });
 
@@ -33,17 +33,17 @@ describe('Get color usage', () => {
     const file = path.join(folderDirectory, 'scenario1.js');
     const content = fs.readFileSync(file, 'utf8');
     const colorUsage = getColorUsedInContent(content);
-    expect(colorUsage).toContain('rgb(0,0,0)');
-    expect(colorUsage).toContain('#343434');
-    expect(colorUsage.length).toBe(2)
+    expect(Array.from(colorUsage.keys())).toContain('rgb(0,0,0)');
+    expect(Array.from(colorUsage.keys())).toContain('#343434');
+    expect(colorUsage.size).toBe(2)
   });
 
   test('scenario 2', () => {
     const file = path.join(folderDirectory, 'scenario2.js');
     const content = fs.readFileSync(file, 'utf8');
     const colorUsage = getColorUsedInContent(content);
-    expect(colorUsage).toContain('red');
-    expect(colorUsage).toContain('black');
-    expect(colorUsage.length).toBe(2)
+    expect(Array.from(colorUsage.keys())).toContain('red');
+    expect(Array.from(colorUsage.keys())).toContain('black');
+    expect(colorUsage.size).toBe(2)
   });
 });

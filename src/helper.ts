@@ -37,7 +37,7 @@ export function getColorUsageInDir(dirPath: string, fileExtensions: string[], di
     const colorsUsed = getColorUsedInContent(fileContent);
     result.push({
       filePath: file,
-      colorUsed: colorsUsed,
+      colorUsed: Array.from(colorsUsed.keys()),
     });
   });
   return result;
@@ -46,9 +46,14 @@ export function getColorUsageInDir(dirPath: string, fileExtensions: string[], di
 const ColorRegex = /(?:#|0x)(?:[a-f0-9]{3}|[a-f0-9]{6})\b|(?:rgb|hsl)a?\((?:\d{1,3},\s*){2}\d{1,3}(?:,\s*\d{1,3})?\)/gi
 const ColorByNameRegex = new RegExp(`(?<![.])\\b(${color_name_array.join('|')})\\b`, 'gi')
 
-export function getColorUsedInContent(fileContent: string): string[] {
+export function getColorUsedInContent(fileContent: string): Map<string, number> {
   const colorsMatchedByRegex = fileContent.match(ColorRegex) || [];
   const colorsMatchedByName = fileContent.match(ColorByNameRegex) || [];
 
-  return [...colorsMatchedByRegex, ...colorsMatchedByName]
+  const allColors = [...colorsMatchedByRegex, ...colorsMatchedByName]
+  const colorUsage = new Map<string, number>()
+  allColors.forEach(color => {
+    colorUsage.set(color, (colorUsage.get(color) || 0) + 1)
+  })
+  return colorUsage
 }

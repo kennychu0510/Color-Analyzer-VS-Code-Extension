@@ -64,12 +64,12 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     const colorUsed = this.getColorsUsedInEditor();
     this._view?.webview.postMessage({
       type: 'onReceiveColorsUsedInFile',
-      value: JSON.stringify([
+      value: JSON.stringify(
         {
           filePath: path,
-          colorUsed,
+          colorUsage: Array.from(colorUsed.entries())
         },
-      ]),
+      ),
     });
   }
 
@@ -79,14 +79,14 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     return result;
   }
 
-  private getColorsUsedInEditor(): string[] {
+  private getColorsUsedInEditor(): Map<String, number> {
     if (this._editor) {
       // get content of the active file
       const content = this._editor.document.getText();
       const colorsUsed = getColorUsedInContent(content);
       return colorsUsed;
     }
-    return [];
+    return new Map();
   }
 
   public revive(panel: vscode.WebviewView) {

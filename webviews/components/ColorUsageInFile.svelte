@@ -1,6 +1,6 @@
 <script lang="ts">
   export let title: string = 'TITLE';
-  export let colorUsed: { [color: string]: string[] } = {};
+  export let colorUsed: Map<string, number> = new Map();
   export let doneUpdate = false;
 
   function onColorClick(color: string) {
@@ -11,11 +11,14 @@
 <div class="container">
   <h2 class="title">{title}</h2>
   {#if doneUpdate}
-    {#each Object.keys(colorUsed) as color}
+    {#each Array.from(colorUsed.keys()) as color}
       <div class="color-item">
-        <div class="color" style="background-color: {color};"></div>
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <p on:click={() => onColorClick(color)} class="color-label">{color}</p>
+        <div class="row">
+          <div class="color" style="background-color: {color};"></div>
+          <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <p on:click={() => onColorClick(color)} class="color-label">{color}</p>
+        </div>
+        <p>{colorUsed.get(color)}</p>
       </div>
     {/each}
   {:else}
@@ -34,6 +37,11 @@
     display: flex;
     align-items: center;
     margin-bottom: 10px;
+    justify-content: space-between;
+  }
+  .row {
+    display: flex;
+    align-items: center;
   }
   .color {
     width: 20px;
