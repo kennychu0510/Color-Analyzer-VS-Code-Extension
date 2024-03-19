@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.0.3] - 2024-03-19
+- Fix default value for file extension to scan
+
+
 ## [1.0.2] - 2024-03-19
 - Added setting config to include directories to ignore
 

@@ -2,7 +2,7 @@
   "name": "ColorAnalyzer",
   "displayName": "Color Analyzer",
   "description": "VS Code Extension for managing colors used in a project",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "engines": {
     "vscode": "^1.60.0"
   },
@@ -52,7 +52,7 @@
         "ColorAnalyzer.filesToScan": {
           "type": "array",
           "description": "File extension to include",
-          "default": [".js", ".jsx", ".tsx", "ts"],
+          "default": [".js", ".jsx", ".tsx", ".ts"],
           "items": {
             "type": "string"
           }
