@@ -75,7 +75,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
   public getColorUsedInProject(projectDirPath: string) {
     if (!projectDirPath) return [];
-    const result = getColorUsageInDir(projectDirPath, getExtensions());
+    const result = getColorUsageInDir(projectDirPath, getExtensions(), getDirectoryToIgnore());
     return result;
   }
 
@@ -143,4 +143,9 @@ function getNonce() {
 export function getExtensions(): string[] {
   const extensions = vscode.workspace.getConfiguration('ColorAnalyzer').get('filesToScan') as string[] | undefined;
   return extensions ?? [];
+}
+
+export function getDirectoryToIgnore(): string[] {
+  const directories = vscode.workspace.getConfiguration('ColorAnalyzer').get('directoriesToIgnore') as string[] | undefined;
+  return directories ?? [];
 }

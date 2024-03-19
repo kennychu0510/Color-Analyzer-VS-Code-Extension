@@ -4,7 +4,7 @@ import { ColorUsedInFile } from './model';
 
 const color_name_array = ["aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black","blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkgrey","darkkhaki","darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkslategrey","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dimgrey","dodgerblue","firebrick","floralwhite","forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow","grey","honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgray","lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightslategrey","lightsteelblue","lightyellow","lime","limegreen","linen","magenta","maroon","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid","palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","purple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue","slategray","slategrey","snow","springgreen","steelblue","tan","teal","thistle","tomato","turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen"]
 
-export function getAllFilesInDirectory(directory: string, fileExtensions: string[]) {
+export function getAllFilesInDirectory(directory: string, fileExtensions: string[], directoriesToIgnore: Set<string>) {
   const foundFiles: string[] = [];
 
   function traverseDirectory(currentPath: string) {
@@ -15,7 +15,9 @@ export function getAllFilesInDirectory(directory: string, fileExtensions: string
       const fileStat = fs.statSync(filePath);
 
       if (fileStat.isDirectory()) {
-        traverseDirectory(filePath); // Recursively traverse nested directories
+        if (!directoriesToIgnore.has(file)) {
+          traverseDirectory(filePath); // Recursively traverse nested directories
+        }
       } else if (fileExtensions.includes(path.extname(file))) {
         foundFiles.push(filePath);
       }
@@ -26,9 +28,10 @@ export function getAllFilesInDirectory(directory: string, fileExtensions: string
   return foundFiles;
 }
 
-export function getColorUsageInDir(dirPath: string, fileExtensions: string[]): ColorUsedInFile[] {
+export function getColorUsageInDir(dirPath: string, fileExtensions: string[], directoriesToIgnore: string[]): ColorUsedInFile[] {
   const result: ColorUsedInFile[] = [];
-  const files = getAllFilesInDirectory(dirPath, fileExtensions);
+  const ignoreDirs = new Set(directoriesToIgnore);
+  const files = getAllFilesInDirectory(dirPath, fileExtensions, ignoreDirs);
   files.forEach((file) => {
     const fileContent = fs.readFileSync(file, 'utf8');
     const colorsUsed = getColorUsedInContent(fileContent);
