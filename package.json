@@ -1,6 +1,6 @@
 {
-  "name": "ColorManager",
-  "displayName": "Color Manager",
+  "name": "ColorAnalyzer",
+  "displayName": "Color Analyzer",
   "description": "VS Code Extension for managing colors used in a project",
   "version": "1.0.0",
   "engines": {
@@ -12,39 +12,53 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/kennychu0510/Color-Manager-VS-Code-Extension"
+    "url": "https://github.com/kennychu0510/Color-Analyzer-VS-Code-Extension"
   },
   "activationEvents": [
-    "onView:ColorManager-sidebar"
+    "onView:ColorAnalyzer-sidebar"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "ColorManager-sidebar-view",
+          "id": "ColorAnalyzer-sidebar-view",
           "title": "Color Manager",
           "icon": "media/color-palette-menu.png"
         }
       ]
     },
     "views": {
-      "ColorManager-sidebar-view": [
+      "ColorAnalyzer-sidebar-view": [
         {
           "type": "webview",
-          "id": "ColorManager-sidebar",
+          "id": "ColorAnalyzer-sidebar",
           "name": "Color Manager",
           "icon": "media/color-palette-menu.svg",
-          "contextualTitle": "ColorManager"
+          "contextualTitle": "ColorAnalyzer"
         }
       ]
     },
     "commands": [
       {
-        "command": "ColorManager.extractSelectionIntoStyleSheet",
+        "command": "ColorAnalyzer.extractSelectionIntoStyleSheet",
         "title": "Color Manager: Extract Selection into Style sheet"
       }
-    ]
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Color Analyzer",
+      "properties": {
+        "ColorAnalyzer.filesToScan": {
+          "type": "array",
+          "description": "File extension to include",
+          "default": [".js", ".jsx", ".tsx", "ts"],
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npx vitest run && npm run package",

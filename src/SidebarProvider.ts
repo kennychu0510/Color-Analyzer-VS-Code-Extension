@@ -1,7 +1,5 @@
 import * as vscode from 'vscode';
-import { getAllFilesInDirectory, getColorUsageInDir, getColorUsedInContent } from './helper';
-
-const fileExtensions = ['.js', '.jsx', '.tsx'];
+import { getColorUsageInDir, getColorUsedInContent } from './helper';
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
   _view?: vscode.WebviewView;
@@ -77,7 +75,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   public getColorUsedInProject() {
     const projectDirPath = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
     if (!projectDirPath) return [];
-    const result = getColorUsageInDir(projectDirPath);
+    const result = getColorUsageInDir(projectDirPath, getExtensions());
     return result;
   }
 
@@ -140,4 +138,9 @@ function getNonce() {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return text;
+}
+
+export function getExtensions(): string[] {
+  const extensions = vscode.workspace.getConfiguration('ColorAnalyzer').get('filesToScan') as string[] | undefined;
+  return extensions ?? [];
 }

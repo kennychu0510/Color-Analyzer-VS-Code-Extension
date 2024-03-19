@@ -6,7 +6,7 @@ export function activate(context: vscode.ExtensionContext) {
   const sidebarProvider = new SidebarProvider(context.extensionUri);
 
   const subscriptions = [
-    vscode.window.registerWebviewViewProvider('ColorManager-sidebar', sidebarProvider),
+    vscode.window.registerWebviewViewProvider('ColorAnalyzer-sidebar', sidebarProvider),
     vscode.window.onDidChangeActiveTextEditor((editor) => {
       if (!editor) return
       sidebarProvider._editor = editor;
