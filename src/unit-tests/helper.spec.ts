@@ -14,6 +14,7 @@ describe('Extract colors in file', () => {
     `;
     const colorUsage = getColorUsedInContent(input);
     expect(colorUsage).toContain('rgb(111,111,111,111)');
+    expect(colorUsage.length).toBe(1)
   });
 
   test('scenario 1', () => {
@@ -23,6 +24,7 @@ describe('Extract colors in file', () => {
     `;
     const colorUsage = getColorUsedInContent(input);
     expect(colorUsage).toContain('red');
+    expect(colorUsage.length).toBe(1)
   });
 });
 
@@ -33,6 +35,7 @@ describe('Get color usage', () => {
     const colorUsage = getColorUsedInContent(content);
     expect(colorUsage).toContain('rgb(0,0,0)');
     expect(colorUsage).toContain('#343434');
+    expect(colorUsage.length).toBe(2)
   });
 
   test('scenario 2', () => {
@@ -41,5 +44,6 @@ describe('Get color usage', () => {
     const colorUsage = getColorUsedInContent(content);
     expect(colorUsage).toContain('red');
     expect(colorUsage).toContain('black');
+    expect(colorUsage.length).toBe(2)
   });
 });
