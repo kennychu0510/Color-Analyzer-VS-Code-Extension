@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.0.4] - 2024-03-19
+- Added color usage count in color used in file
+
 ## [1.0.3] - 2024-03-19
 - Fix default value for file extension to scan
 

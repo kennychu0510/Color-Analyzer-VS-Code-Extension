@@ -2,7 +2,7 @@
   "name": "ColorAnalyzer",
   "displayName": "Color Analyzer",
   "description": "VS Code Extension for managing colors used in a project",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "engines": {
     "vscode": "^1.60.0"
   },
