@@ -19,6 +19,16 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "commands": [
+      {
+        "command": "ColorAnalyzer.getColorsUsedInFile",
+        "title": "Get colors used in file"
+      },
+      {
+        "command": "ColorAnalyzer.getColorsUsedInDir",
+        "title": "Get colors used in directory"
+      }
+    ],
     "viewsContainers": {
       "activitybar": [
         {

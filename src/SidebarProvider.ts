@@ -26,8 +26,10 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.type) {
         case 'onFetchColorUsed':
-          this.updateWebviewForColorUsedInProject();
           this.updateWebviewForColorUsedInFile();
+          const projectDirPath = vscode.workspace.workspaceFolders?.[0].uri.fsPath
+          if (!projectDirPath) return;
+          this.updateWebviewForColorUsedInProject(projectDirPath);
           break;
         case 'searchForColor':
           const color = data.value;
@@ -45,32 +47,32 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     });
   }
 
-  public updateWebviewForColorUsedInProject() {
-    const projectDirPath = vscode.workspace.workspaceFolders?.[0].uri.fsPath
-    if (!projectDirPath) return
+  public updateWebviewForColorUsedInProject(projectDirPath: string) {
     const colorUsed = this.getColorUsedInProject(projectDirPath);
+    const result = {
+      projectDir: projectDirPath,
+      colorUsed,
+    }
     this._view?.webview.postMessage({
       type: 'onReceiveColorsUsedInProject',
-      value: JSON.stringify({
-        projectDir: projectDirPath,
-        colorUsed,
-      }),
+      value: JSON.stringify(result),
     });
+    return result
   }
 
   public updateWebviewForColorUsedInFile() {
     const path = vscode.window.activeTextEditor?.document.uri.fsPath;
     if (!path) return;
     const colorUsed = this.getColorsUsedInEditor();
+    const result = {
+      filePath: path,
+      colorUsage: Array.from(colorUsed.entries())
+    }
     this._view?.webview.postMessage({
       type: 'onReceiveColorsUsedInFile',
-      value: JSON.stringify(
-        {
-          filePath: path,
-          colorUsage: Array.from(colorUsed.entries())
-        },
-      ),
+      value: JSON.stringify(result),
     });
+    return result
   }
 
   public getColorUsedInProject(projectDirPath: string) {

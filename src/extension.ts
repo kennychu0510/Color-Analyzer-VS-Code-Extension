@@ -11,12 +11,26 @@ export function activate(context: vscode.ExtensionContext) {
       if (!editor) return
       sidebarProvider._editor = editor;
       sidebarProvider.updateWebviewForColorUsedInFile();
-      sidebarProvider.updateWebviewForColorUsedInProject();
+      const projectDirPath = vscode.workspace.workspaceFolders?.[0].uri.fsPath
+      if (!projectDirPath) return
+      sidebarProvider.updateWebviewForColorUsedInProject(projectDirPath);
     }),
     vscode.workspace.onDidSaveTextDocument((event) => {
       sidebarProvider.updateWebviewForColorUsedInFile();
-      sidebarProvider.updateWebviewForColorUsedInProject();
+      const projectDirPath = vscode.workspace.workspaceFolders?.[0].uri.fsPath
+      if (!projectDirPath) return
+      sidebarProvider.updateWebviewForColorUsedInProject(projectDirPath);
     }),
+    /* FOR TESTING */
+    vscode.commands.registerCommand('ColorAnalyzer.getColorsUsedInFile', () => {
+      const result = sidebarProvider.updateWebviewForColorUsedInFile();
+      vscode.window.showInformationMessage(JSON.stringify(result))
+    }),
+    vscode.commands.registerCommand('ColorAnalyzer.getColorsUsedInDir', (selectedDir: vscode.Uri | undefined) => {
+      if (!selectedDir) return
+      const result = sidebarProvider.updateWebviewForColorUsedInProject(selectedDir.fsPath);
+      vscode.window.showInformationMessage(JSON.stringify(result))
+    })
   ];
   subscriptions.forEach((item) => context.subscriptions.push(item));
 }
