@@ -5,13 +5,6 @@ import * as sinon from 'sinon';
 import * as vscode from 'vscode';
 import { ColorUsedInFile } from '../model';
 
-const features = {
-  styleExtraction: 'styles-extraction',
-  copyStyles: 'copy-styles',
-  removeStyles: 'remove-styles',
-  batchClean: 'batchClean',
-} as const;
-
 // get current working folder path
 const workspaceFolder = path.join(__dirname, '..', '..', 'src', 'test', 'resources');
 
