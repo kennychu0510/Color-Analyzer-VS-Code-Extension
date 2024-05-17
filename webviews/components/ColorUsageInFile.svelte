@@ -1,22 +1,22 @@
 <script lang="ts">
-  export let title: string = 'TITLE';
   export let colorUsed: Map<string, number> = new Map();
   export let doneUpdate = false;
 
   function onColorClick(color: string) {
-    tsvscode.postMessage({ type: 'searchForColor', value: color });
+    tsvscode.postMessage({ type: "searchForColor", value: color });
   }
 </script>
 
 <div class="container">
-  <h2 class="title">{title}</h2>
   {#if doneUpdate}
     {#each Array.from(colorUsed.keys()) as color}
       <div class="color-item">
         <div class="row">
           <div class="color" style="background-color: {color};"></div>
           <!-- svelte-ignore a11y-click-events-have-key-events -->
-          <p on:click={() => onColorClick(color)} class="color-label">{color}</p>
+          <p on:click={() => onColorClick(color)} class="color-label">
+            {color}
+          </p>
         </div>
         <p>{colorUsed.get(color)}</p>
       </div>
@@ -29,9 +29,6 @@
 <style>
   .container {
     margin-bottom: 10px;
-  }
-  .title {
-    margin-bottom: 5px;
   }
   .color-item {
     display: flex;

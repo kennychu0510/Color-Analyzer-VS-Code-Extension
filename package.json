@@ -19,6 +19,18 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "commands": [
+      {
+        "command": "ColorAnalyzer-panel",
+        "title": "Open Color Analyzer",
+        "category": "Color Analyzer"
+      },
+      {
+        "command": "ColorAnalyzer.analyzeFolder",
+        "title": "Analyze Color Usage in Folder",
+        "category": "Color Analyzer"
+      }
+    ],
     "viewsContainers": {
       "activitybar": [
         {
@@ -39,6 +51,15 @@
         }
       ]
     },
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "ColorAnalyzer.analyzeFolder",
+          "group": "ColorAnalyzer",
+          "when": "explorerResourceIsFolder"
+        }
+      ]
+    },
     "configuration": {
       "type": "object",
       "title": "Color Analyzer",
@@ -46,7 +67,12 @@
         "ColorAnalyzer.filesToScan": {
           "type": "array",
           "description": "File extension to include",
-          "default": [".js", ".jsx", ".tsx", ".ts"],
+          "default": [
+            ".js",
+            ".jsx",
+            ".tsx",
+            ".ts"
+          ],
           "items": {
             "type": "string"
           }
@@ -54,7 +80,12 @@
         "ColorAnalyzer.directoriesToIgnore": {
           "type": "array",
           "description": "Directories to ignore in file scanning",
-          "default": ["node_modules", "dist", "out", "build"],
+          "default": [
+            "node_modules",
+            "dist",
+            "out",
+            "build"
+          ],
           "items": {
             "type": "string"
           }

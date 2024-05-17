@@ -1,13 +1,31 @@
-import * as vscode from 'vscode';
-import { getColorUsageInDir, getColorUsedInContent } from './helper';
+import * as vscode from "vscode";
+import * as path from "path";
+import { getColorUsageInDir, getColorUsedInContent } from "./helper";
+
+enum Mode {
+  CurrentFile,
+  CurrentProject,
+  CustomDirectory,
+}
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
   _view?: vscode.WebviewView;
   _doc?: vscode.TextDocument;
   _editor?: vscode.TextEditor;
+  mode: Mode = Mode.CurrentFile;
 
   constructor(private readonly _extensionUri: vscode.Uri) {
     this._editor = vscode.window.activeTextEditor;
+  }
+
+  public refresh() {
+    if (this.mode === Mode.CurrentFile) {
+      this.updateWebviewForColorUsedInFile();
+    } else if (this.mode === Mode.CurrentProject) {
+      this.updateWebviewForColorUsedInProject();
+    } else if (this.mode === Mode.CustomDirectory) {
+      this.mode = Mode.CustomDirectory;
+    }
   }
 
   public resolveWebviewView(webviewView: vscode.WebviewView) {
@@ -25,32 +43,64 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     // Listen for messages from the Sidebar component and execute action
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.type) {
-        case 'onFetchColorUsed':
+        case "onFetchColorUsed":
           this.updateWebviewForColorUsedInProject();
           this.updateWebviewForColorUsedInFile();
           break;
-        case 'searchForColor':
+        case "searchForColor":
           const color = data.value;
-          await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: color });
-          await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
+          await vscode.commands.executeCommand("editor.actions.findWithArgs", {
+            searchString: color,
+          });
+          await vscode.commands.executeCommand(
+            "editor.action.nextMatchFindAction"
+          );
           break;
-        case 'goToColor':
+        case "goToColor":
           const filePath = data.value.path;
           const uri = vscode.Uri.file(filePath);
-          await vscode.commands.executeCommand('vscode.open', uri);
-          await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: data.value.color });
-          await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
+          await vscode.commands.executeCommand("vscode.open", uri);
+          await vscode.commands.executeCommand("editor.actions.findWithArgs", {
+            searchString: data.value.color,
+          });
+          await vscode.commands.executeCommand(
+            "editor.action.nextMatchFindAction"
+          );
+          break;
+        case "changeMode":
+          this.mode = data.value;
+          this.refresh();
           break;
       }
     });
   }
 
-  public updateWebviewForColorUsedInProject() {
-    const projectDirPath = vscode.workspace.workspaceFolders?.[0].uri.fsPath
-    if (!projectDirPath) return
-    const colorUsed = this.getColorUsedInProject(projectDirPath);
+  public analyzeFolder(selectedDir: string) {
+    this.mode = Mode.CustomDirectory;
+    this.updateWebviewForColorUsedInDir(selectedDir);
+  }
+
+  private updateWebviewForColorUsedInDir(dirPath: string) {
+    const colorUsed = this.getColorUsedInDir(dirPath);
     this._view?.webview.postMessage({
-      type: 'onReceiveColorsUsedInProject',
+      type: "onReceiveColorsUsedInDir",
+      value: JSON.stringify({
+        rootDir: dirPath,
+        colorUsed,
+        relativeDir: path.relative(
+          vscode.workspace.workspaceFolders?.[0].uri.fsPath || "",
+          dirPath
+        ),
+      }),
+    });
+  }
+
+  private updateWebviewForColorUsedInProject() {
+    const projectDirPath = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
+    if (!projectDirPath) return;
+    const colorUsed = this.getColorUsedInDir(projectDirPath);
+    this._view?.webview.postMessage({
+      type: "onReceiveColorsUsedInProject",
       value: JSON.stringify({
         projectDir: projectDirPath,
         colorUsed,
@@ -58,24 +108,26 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     });
   }
 
-  public updateWebviewForColorUsedInFile() {
+  private updateWebviewForColorUsedInFile() {
     const path = vscode.window.activeTextEditor?.document.uri.fsPath;
     if (!path) return;
     const colorUsed = this.getColorsUsedInEditor();
     this._view?.webview.postMessage({
-      type: 'onReceiveColorsUsedInFile',
-      value: JSON.stringify(
-        {
-          filePath: path,
-          colorUsage: Array.from(colorUsed.entries())
-        },
-      ),
+      type: "onReceiveColorsUsedInFile",
+      value: JSON.stringify({
+        filePath: path,
+        colorUsage: Array.from(colorUsed.entries()),
+      }),
     });
   }
 
-  public getColorUsedInProject(projectDirPath: string) {
-    if (!projectDirPath) return [];
-    const result = getColorUsageInDir(projectDirPath, getExtensions(), getDirectoryToIgnore());
+  public getColorUsedInDir(dirPath: string) {
+    if (!dirPath) return [];
+    const result = getColorUsageInDir(
+      dirPath,
+      getExtensions(),
+      getDirectoryToIgnore()
+    );
     return result;
   }
 
@@ -94,14 +146,22 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   }
 
   private _getHtmlForWebview(webview: vscode.Webview) {
-    //@ts-ignore
-    const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'reset.css'));
-    //@ts-ignore
-    const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'vscode.css'));
-    //@ts-ignore
-    const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'out', 'compiled/sidebar.js'));
-    //@ts-ignore
-    const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'out', 'compiled/sidebar.css'));
+    const styleResetUri = webview.asWebviewUri(
+      //@ts-ignore
+      vscode.Uri.joinPath(this._extensionUri, "media", "reset.css")
+    );
+    const styleVSCodeUri = webview.asWebviewUri(
+      //@ts-ignore
+      vscode.Uri.joinPath(this._extensionUri, "media", "vscode.css")
+    );
+    const scriptUri = webview.asWebviewUri(
+      //@ts-ignore
+      vscode.Uri.joinPath(this._extensionUri, "out", "compiled/sidebar.js")
+    );
+    const styleMainUri = webview.asWebviewUri(
+      //@ts-ignore
+      vscode.Uri.joinPath(this._extensionUri, "out", "compiled/sidebar.css")
+    );
 
     // Use a nonce to only allow a specific script to be run.
     const nonce = getNonce();
@@ -132,8 +192,9 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 }
 
 function getNonce() {
-  let text = '';
-  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let text = "";
+  const possible =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   for (let i = 0; i < 32; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
@@ -141,11 +202,15 @@ function getNonce() {
 }
 
 export function getExtensions(): string[] {
-  const extensions = vscode.workspace.getConfiguration('ColorAnalyzer').get('filesToScan') as string[] | undefined;
+  const extensions = vscode.workspace
+    .getConfiguration("ColorAnalyzer")
+    .get("filesToScan") as string[] | undefined;
   return extensions ?? [];
 }
 
 export function getDirectoryToIgnore(): string[] {
-  const directories = vscode.workspace.getConfiguration('ColorAnalyzer').get('directoriesToIgnore') as string[] | undefined;
+  const directories = vscode.workspace
+    .getConfiguration("ColorAnalyzer")
+    .get("directoriesToIgnore") as string[] | undefined;
   return directories ?? [];
 }

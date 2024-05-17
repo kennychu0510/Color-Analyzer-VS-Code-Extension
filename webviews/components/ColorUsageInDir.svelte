@@ -1,6 +1,7 @@
 <script lang="ts">
   export let colorUsed: { [color: string]: string[] } = {};
-  export let projectDir: string = "";
+  export let rootDir: string = "";
+  export let relativeDir: string = "";
   export let doneUpdate = false;
 
   let isExpanded = true;
@@ -30,6 +31,7 @@
 <div class="container">
   {#if doneUpdate}
     {#if isExpanded}
+      <div class="dir-path">{relativeDir}</div>
       {#each Object.keys(colorUsed) as color}
         <div class="color-item">
           <div class="row">
@@ -49,7 +51,7 @@
                 on:click={handleOnClickPath(filePath, color)}
                 class="file-path-item"
               >
-                {filePath.replace(projectDir, "")}
+                {filePath.replace(rootDir, "")}
               </p>
             {/each}
           </div>
@@ -86,14 +88,9 @@
     cursor: pointer;
     font-weight: bold;
   }
-  .show-button {
-    font-size: small;
-    cursor: pointer;
-    color: var(--vscode-button-background);
-    user-select: none;
-  }
-  .show-button:hover {
-    text-decoration: underline;
+  .dir-path {
+    margin-bottom: 10px;
+    font-style: italic;
   }
   .file-path-item {
     margin-left: 30px;
