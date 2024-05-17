@@ -90,7 +90,7 @@
   }
   .dir-path {
     margin-bottom: 10px;
-    font-style: italic;
+    color: orange;
   }
   .file-path-item {
     margin-left: 30px;
