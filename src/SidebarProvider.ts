@@ -13,6 +13,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   _doc?: vscode.TextDocument;
   _editor?: vscode.TextEditor;
   mode: Mode = Mode.CurrentFile;
+  customDir: string = "";
 
   constructor(private readonly _extensionUri: vscode.Uri) {
     this._editor = vscode.window.activeTextEditor;
@@ -25,6 +26,9 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       this.updateWebviewForColorUsedInProject();
     } else if (this.mode === Mode.CustomDirectory) {
       this.mode = Mode.CustomDirectory;
+      if (this.customDir) {
+        this.getColorUsedInDir(this.customDir);
+      }
     }
   }
 
@@ -77,6 +81,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
   public analyzeFolder(selectedDir: string) {
     this.mode = Mode.CustomDirectory;
+    this.customDir = selectedDir;
     this.updateWebviewForColorUsedInDir(selectedDir);
   }
 

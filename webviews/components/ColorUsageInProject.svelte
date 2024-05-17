@@ -30,6 +30,9 @@
 <div class="container">
   {#if doneUpdate}
     {#if isExpanded}
+      {#if Object.keys(colorUsed).length === 0}
+        <p>No color found in this directory</p>
+      {/if}
       {#each Object.keys(colorUsed) as color}
         <div class="color-item">
           <div class="row">

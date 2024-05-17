@@ -32,6 +32,9 @@
   {#if doneUpdate}
     {#if isExpanded}
       <div class="dir-path">{relativeDir}</div>
+      {#if Object.keys(colorUsed).length === 0}
+        <p>No color found in this directory</p>
+      {/if}
       {#each Object.keys(colorUsed) as color}
         <div class="color-item">
           <div class="row">
