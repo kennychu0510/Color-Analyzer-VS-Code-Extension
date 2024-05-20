@@ -200,7 +200,7 @@ export function getColorUsageInDir(
 }
 
 const ColorRegex =
-  /(?:#|0x)(?:[a-f0-9]{3}|[a-f0-9]{6})\b|(?:rgb|hsl)a?\((?:\d{1,3},\s*){2}\d{1,3}(?:,\s*\d{1,3})?\)/gi;
+  /(?:#)(?:[a-f0-9]{3}|[a-f0-9]{6})\b|(?:rgb|hsl)a?\((?:\d{1,3},\s*){2}\d{1,3}(?:,\s*\d{1,3})?\)/gi;
 const ColorByNameRegex = new RegExp(
   `(?<![.])\\b(${color_name_array.join("|")})\\b`,
   "gi"
