@@ -12,12 +12,16 @@
   }
 
   $: colorUsedInProject = {};
+  $: filteredColorUsedInProject = {};
   $: colorUsedInDir = {};
+  $: filteredColorUsedInDir = {};
   $: colorUsedInFile = new Map();
+  $: filteredColorUsedInFile = new Map();
   $: projectDir = "";
   $: rootDir = "";
   $: relativeDir = "";
   $: isLoading = false;
+  $: searchValue = "";
   let mode: Mode = Mode.CurrentFile;
 
   function reload() {
@@ -47,9 +51,48 @@
   }
 
   $: onModeChange(mode);
+  $: filterBySearchValue(searchValue);
 
   function onModeChange(mode: Mode) {
+    isLoading = true;
     tsvscode.postMessage({ type: "changeMode", value: mode });
+  }
+
+  function filterBySearchValue(value: string): void {
+    console.log(value);
+    if (!value) {
+      filteredColorUsedInFile = new Map(colorUsedInFile);
+      filteredColorUsedInDir = { ...colorUsedInDir };
+      filteredColorUsedInProject = { ...colorUsedInProject };
+      return;
+    }
+    if (mode === Mode.CurrentFile) {
+      filteredColorUsedInFile = new Map(
+        [...colorUsedInFile].filter(([color]) => color.includes(value))
+      );
+    } else if (mode === Mode.CurrentProject) {
+      filteredColorUsedInProject = Object.keys(colorUsedInProject).reduce(
+        (acc, color) => {
+          if (color.includes(value)) {
+            // @ts-ignore
+            acc[color] = colorUsedInProject[color];
+          }
+          return acc;
+        },
+        {}
+      );
+    } else {
+      filteredColorUsedInDir = Object.keys(colorUsedInDir).reduce(
+        (acc, color) => {
+          if (color.includes(value)) {
+            // @ts-ignore
+            acc[color] = colorUsedInDir[color];
+          }
+          return acc;
+        },
+        {}
+      );
+    }
   }
 
   onMount(() => {
@@ -61,6 +104,9 @@
           if (message.value) {
             const data = JSON.parse(message.value);
             colorUsedInProject = parseColorUsageForProject(data.colorUsed);
+            filteredColorUsedInProject = parseColorUsageForProject(
+              data.colorUsed
+            );
             projectDir = data.projectDir;
             isLoading = false;
           }
@@ -69,6 +115,7 @@
           if (message.value) {
             const data = JSON.parse(message.value);
             colorUsedInFile = new Map(data.colorUsage);
+            filteredColorUsedInFile = new Map(data.colorUsage);
             isLoading = false;
           }
           break;
@@ -76,6 +123,7 @@
           if (message.value) {
             const data = JSON.parse(message.value);
             colorUsedInDir = parseColorUsageForProject(data.colorUsed);
+            filteredColorUsedInDir = parseColorUsageForProject(data.colorUsed);
             rootDir = data.rootDir;
             isLoading = false;
             relativeDir = data.relativeDir;
@@ -107,19 +155,30 @@
     <option value={Mode.CurrentProject}>Current Project</option>
     <option value={Mode.CustomDirectory}>Custom Directory</option>
   </select>
+  <div class="row">
+    <input
+      type="text"
+      class="search"
+      placeholder="Search"
+      bind:value={searchValue}
+    />
+  </div>
   {#if mode === Mode.CurrentProject}
     <ColorUsageInProject
-      colorUsed={colorUsedInProject}
+      colorUsed={filteredColorUsedInProject}
       {projectDir}
       doneUpdate={!isLoading}
     />
   {/if}
   {#if mode === Mode.CurrentFile}
-    <ColorUsageInFile colorUsed={colorUsedInFile} doneUpdate={!isLoading} />
+    <ColorUsageInFile
+      colorUsed={filteredColorUsedInFile}
+      doneUpdate={!isLoading}
+    />
   {/if}
   {#if mode === Mode.CustomDirectory}
     <ColorUsageInDir
-      colorUsed={colorUsedInDir}
+      colorUsed={filteredColorUsedInDir}
       {rootDir}
       {relativeDir}
       doneUpdate={!isLoading}
@@ -140,5 +199,8 @@
     padding: 3px 5px;
     outline: none;
     margin: 10px 0;
+  }
+  .row {
+    margin-bottom: 10px;
   }
 </style>
