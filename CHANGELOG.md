@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.0.8] - 2024-05-20
+
+- Updated readme and demo images
+
 ## [1.0.7] - 2024-05-20
 
 - New UI for mode selection
