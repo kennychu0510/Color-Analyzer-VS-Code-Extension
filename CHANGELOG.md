@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.0.7] - 2024-05-20
+
+- New UI for mode selection
+- Added sorting and filter feature
+
 ## [1.0.6] - 2024-05-17
 
 - Added custom directory feature

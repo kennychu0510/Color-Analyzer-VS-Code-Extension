@@ -211,12 +211,13 @@
           break;
       }
     });
+    reload();
   });
 </script>
 
 <div>
   <div class="headerContainer">
-    <h1>Color Usage Summary</h1>
+    <div style="font-weight: bold;">Usage Summary</div>
     <Reload {reload} />
   </div>
   <div class="row">
@@ -242,7 +243,7 @@
       style={mode === Mode.CustomDirectory ? "border-bottom-color: white;" : ""}
       on:click={() => (mode = Mode.CustomDirectory)}
     >
-      Custom
+      Directory
     </div>
   </div>
   {#if mode === Mode.CustomDirectory && relativeDir}
@@ -322,6 +323,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin: 10px 0;
   }
   .row {
     margin-bottom: 10px;
