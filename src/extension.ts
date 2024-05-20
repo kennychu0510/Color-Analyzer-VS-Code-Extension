@@ -22,6 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
       "ColorAnalyzer.analyzeFolder",
       async (selectedDir: vscode.Uri | undefined) => {
         if (!selectedDir) return;
+        sidebarProvider.startLoading();
         await vscode.commands.executeCommand("ColorAnalyzer-sidebar.focus");
         sidebarProvider.analyzeFolder(selectedDir.fsPath);
       }

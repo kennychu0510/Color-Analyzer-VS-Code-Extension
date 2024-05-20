@@ -13,24 +13,15 @@
 
   $: colorUsedInProject = {};
   $: colorUsedInDir = {};
-  $: status = {
-    colorUsedInProject: false,
-    colorUsedInFile: false,
-    colorUsedInDir: false,
-  };
   $: colorUsedInFile = new Map();
   $: projectDir = "";
   $: rootDir = "";
   $: relativeDir = "";
+  $: isLoading = false;
   let mode: Mode = Mode.CurrentFile;
 
   function reload() {
-    // send message to the extension asking for the selected text
-    status = {
-      colorUsedInProject: false,
-      colorUsedInFile: false,
-      colorUsedInDir: false,
-    };
+    isLoading = true;
     tsvscode.postMessage({ type: "onFetchColorUsed", value: "" });
   }
 
@@ -71,20 +62,14 @@
             const data = JSON.parse(message.value);
             colorUsedInProject = parseColorUsageForProject(data.colorUsed);
             projectDir = data.projectDir;
-            status = {
-              ...status,
-              colorUsedInProject: true,
-            };
+            isLoading = false;
           }
           break;
         case "onReceiveColorsUsedInFile":
           if (message.value) {
             const data = JSON.parse(message.value);
             colorUsedInFile = new Map(data.colorUsage);
-            status = {
-              ...status,
-              colorUsedInFile: true,
-            };
+            isLoading = false;
           }
           break;
         case "onReceiveColorsUsedInDir":
@@ -92,10 +77,7 @@
             const data = JSON.parse(message.value);
             colorUsedInDir = parseColorUsageForProject(data.colorUsed);
             rootDir = data.rootDir;
-            status = {
-              ...status,
-              colorUsedInDir: true,
-            };
+            isLoading = false;
             relativeDir = data.relativeDir;
             mode = Mode.CustomDirectory;
           }
@@ -104,6 +86,9 @@
           if (message.value) {
             mode = message.value;
           }
+          break;
+        case "startLoading":
+          isLoading = true;
           break;
       }
     });
@@ -126,21 +111,18 @@
     <ColorUsageInProject
       colorUsed={colorUsedInProject}
       {projectDir}
-      doneUpdate={status.colorUsedInProject}
+      doneUpdate={!isLoading}
     />
   {/if}
   {#if mode === Mode.CurrentFile}
-    <ColorUsageInFile
-      colorUsed={colorUsedInFile}
-      doneUpdate={status.colorUsedInFile}
-    />
+    <ColorUsageInFile colorUsed={colorUsedInFile} doneUpdate={!isLoading} />
   {/if}
   {#if mode === Mode.CustomDirectory}
     <ColorUsageInDir
       colorUsed={colorUsedInDir}
       {rootDir}
       {relativeDir}
-      doneUpdate={status.colorUsedInDir}
+      doneUpdate={!isLoading}
     />
   {/if}
 </div>

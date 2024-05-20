@@ -20,6 +20,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   }
 
   public refresh() {
+    this.startLoading();
     if (this.mode === Mode.CurrentFile) {
       this.updateWebviewForColorUsedInFile();
     } else if (this.mode === Mode.CurrentProject) {
@@ -27,7 +28,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     } else if (this.mode === Mode.CustomDirectory) {
       this.mode = Mode.CustomDirectory;
       if (this.customDir) {
-        this.getColorUsedInDir(this.customDir);
+        this.updateWebviewForColorUsedInDir(this.customDir);
       }
     }
   }
@@ -98,6 +99,10 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         ),
       }),
     });
+  }
+
+  public startLoading() {
+    this._view?.webview.postMessage({ type: "startLoading" });
   }
 
   private updateWebviewForColorUsedInProject() {

@@ -4,7 +4,6 @@
   export let relativeDir: string = "";
   export let doneUpdate = false;
 
-  let isExpanded = true;
   let showColorDetail = "";
 
   function onClickColor(color: string) {
@@ -29,9 +28,11 @@
 </script>
 
 <div class="container">
-  {#if doneUpdate}
-    {#if isExpanded}
-      <div class="dir-path">{relativeDir}</div>
+  {#if !relativeDir}
+    <p class="loading">Right click a directory to analyze</p>
+  {:else}
+    <div class="dir-path">{relativeDir}</div>
+    {#if doneUpdate}
       {#if Object.keys(colorUsed).length === 0}
         <p>No color found in this directory</p>
       {/if}
@@ -60,9 +61,9 @@
           </div>
         {/if}
       {/each}
+    {:else}
+      <p class="loading">Loading...</p>
     {/if}
-  {:else}
-    <p class="loading">Loading...</p>
   {/if}
 </div>
 
