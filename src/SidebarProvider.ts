@@ -14,6 +14,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   _editor?: vscode.TextEditor;
   mode: Mode = Mode.CurrentFile;
   customDir: string = "";
+  private lastRefreshTime: number = 0;
 
   constructor(private readonly _extensionUri: vscode.Uri) {
     this._editor = vscode.window.activeTextEditor;

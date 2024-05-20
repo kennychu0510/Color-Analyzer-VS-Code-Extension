@@ -4,6 +4,14 @@
   import ColorUsageInDir from "./ColorUsageInDir.svelte";
   import ColorUsageInProject from "./ColorUsageInProject.svelte";
   import Reload from "./Reload.svelte";
+  import {
+    filterColorUsageByValueInFile,
+    filterObjByValue,
+    sortColorUsedInFileByName,
+    sortColorUsedInFileByUsage,
+    sortColorUsedObjByName,
+    sortColorUsedObjByUsage,
+  } from "./helper";
 
   enum Mode {
     CurrentFile,
@@ -12,8 +20,10 @@
   }
 
   enum SortMethod {
-    Name,
-    Usage,
+    NameAsc,
+    NameDsc,
+    UsageAsc,
+    UsageDsc,
   }
 
   $: colorUsedInProject = {};
@@ -27,7 +37,7 @@
   $: relativeDir = "";
   $: isLoading = false;
   $: searchValue = "";
-  $: sortMethod = "";
+  let sortMethod: SortMethod = SortMethod.NameAsc;
   let mode: Mode = Mode.CurrentFile;
 
   function reload() {
@@ -58,6 +68,7 @@
 
   $: onModeChange(mode);
   $: filterBySearchValue(searchValue, mode);
+  $: sortByMethod(sortMethod, mode);
 
   function onModeChange(mode: Mode) {
     isLoading = true;
@@ -65,7 +76,6 @@
   }
 
   function filterBySearchValue(value: string, mode: Mode): void {
-    console.log(value);
     if (!value) {
       filteredColorUsedInFile = new Map(colorUsedInFile);
       filteredColorUsedInDir = { ...colorUsedInDir };
@@ -73,35 +83,88 @@
       return;
     }
     if (mode === Mode.CurrentFile) {
-      filteredColorUsedInFile = new Map(
-        [...colorUsedInFile].filter(([color]) => color.includes(value))
+      filteredColorUsedInFile = filterColorUsageByValueInFile(
+        colorUsedInFile,
+        value
       );
     } else if (mode === Mode.CurrentProject) {
-      filteredColorUsedInProject = Object.keys(colorUsedInProject).reduce(
-        (acc, color) => {
-          if (color.includes(value)) {
-            // @ts-ignore
-            acc[color] = colorUsedInProject[color];
-          }
-          return acc;
-        },
-        {}
-      );
+      filteredColorUsedInProject = filterObjByValue(colorUsedInProject, value);
     } else {
-      filteredColorUsedInDir = Object.keys(colorUsedInDir).reduce(
-        (acc, color) => {
-          if (color.includes(value)) {
-            // @ts-ignore
-            acc[color] = colorUsedInDir[color];
-          }
-          return acc;
-        },
-        {}
-      );
+      filteredColorUsedInDir = filterObjByValue(colorUsedInDir, value);
     }
   }
 
-  function sortByMethod(method: SortMethod) {}
+  function sortByMethod(method: SortMethod, mode: Mode) {
+    if (method === SortMethod.NameAsc) {
+      if (mode === Mode.CurrentFile) {
+        filteredColorUsedInFile = sortColorUsedInFileByName(
+          filteredColorUsedInFile,
+          true
+        );
+      } else if (mode === Mode.CurrentProject) {
+        filteredColorUsedInProject = sortColorUsedObjByName(
+          filteredColorUsedInProject,
+          true
+        );
+      } else {
+        filteredColorUsedInDir = sortColorUsedObjByName(
+          filteredColorUsedInDir,
+          true
+        );
+      }
+    } else if (method === SortMethod.NameDsc) {
+      if (mode === Mode.CurrentFile) {
+        filteredColorUsedInFile = sortColorUsedInFileByName(
+          filteredColorUsedInFile,
+          false
+        );
+      } else if (mode === Mode.CurrentProject) {
+        filteredColorUsedInProject = sortColorUsedObjByName(
+          filteredColorUsedInProject,
+          false
+        );
+      } else {
+        filteredColorUsedInDir = sortColorUsedObjByName(
+          filteredColorUsedInDir,
+          false
+        );
+      }
+    } else if (method === SortMethod.UsageAsc) {
+      if (mode === Mode.CurrentFile) {
+        filteredColorUsedInFile = sortColorUsedInFileByUsage(
+          filteredColorUsedInFile,
+          true
+        );
+      } else if (mode === Mode.CustomDirectory) {
+        filteredColorUsedInDir = sortColorUsedObjByUsage(
+          filteredColorUsedInDir,
+          true
+        );
+      } else {
+        filteredColorUsedInProject = sortColorUsedObjByUsage(
+          filteredColorUsedInProject,
+          true
+        );
+      }
+    } else if (method === SortMethod.UsageDsc) {
+      if (mode === Mode.CurrentFile) {
+        filteredColorUsedInFile = sortColorUsedInFileByUsage(
+          filteredColorUsedInFile,
+          false
+        );
+      } else if (mode === Mode.CustomDirectory) {
+        filteredColorUsedInDir = sortColorUsedObjByUsage(
+          filteredColorUsedInDir,
+          false
+        );
+      } else {
+        filteredColorUsedInProject = sortColorUsedObjByUsage(
+          filteredColorUsedInProject,
+          false
+        );
+      }
+    }
+  }
 
   onMount(() => {
     // Listen for messages from the extension
@@ -148,8 +211,6 @@
           break;
       }
     });
-
-    reload();
   });
 </script>
 
@@ -198,8 +259,40 @@
     />
   </div>
   <div class="row sort-row">
-    <div class="sort-button">Color</div>
-    <div class="sort-button">Usage</div>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <div
+      class="sort-button"
+      style={sortMethod === SortMethod.NameAsc ||
+      sortMethod === SortMethod.NameDsc
+        ? "font-weight: bold;"
+        : ""}
+      on:click={() => {
+        if (sortMethod === SortMethod.NameAsc) {
+          sortMethod = SortMethod.NameDsc;
+        } else {
+          sortMethod = SortMethod.NameAsc;
+        }
+      }}
+    >
+      Color
+    </div>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <div
+      class="sort-button"
+      style={sortMethod === SortMethod.UsageAsc ||
+      sortMethod === SortMethod.UsageDsc
+        ? "font-weight: bold;"
+        : ""}
+      on:click={() => {
+        if (sortMethod === SortMethod.UsageAsc) {
+          sortMethod = SortMethod.UsageDsc;
+        } else {
+          sortMethod = SortMethod.UsageAsc;
+        }
+      }}
+    >
+      Usage
+    </div>
   </div>
   {#if mode === Mode.CurrentProject}
     <ColorUsageInProject
@@ -230,14 +323,6 @@
     justify-content: space-between;
     align-items: center;
   }
-
-  .select {
-    background-color: #1f1f1f;
-    color: white;
-    padding: 3px 5px;
-    outline: none;
-    margin: 10px 0;
-  }
   .row {
     margin-bottom: 10px;
     display: flex;
@@ -250,6 +335,7 @@
   }
   .sort-button {
     cursor: pointer;
+    user-select: none;
   }
   .mode-item {
     flex: 1;
@@ -257,5 +343,8 @@
     margin-top: 10px;
     padding-bottom: 3px;
     border-bottom: 2px solid transparent;
+    user-select: none;
+    cursor: pointer;
+    transition: all 0.5s;
   }
 </style>

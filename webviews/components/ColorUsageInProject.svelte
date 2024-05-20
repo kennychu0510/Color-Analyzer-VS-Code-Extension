@@ -89,15 +89,6 @@
     cursor: pointer;
     font-weight: bold;
   }
-  .show-button {
-    font-size: small;
-    cursor: pointer;
-    color: var(--vscode-button-background);
-    user-select: none;
-  }
-  .show-button:hover {
-    text-decoration: underline;
-  }
   .file-path-item {
     margin-left: 30px;
     color: orange;
