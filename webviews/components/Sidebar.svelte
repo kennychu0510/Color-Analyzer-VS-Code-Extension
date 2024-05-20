@@ -11,6 +11,11 @@
     CustomDirectory,
   }
 
+  enum SortMethod {
+    Name,
+    Usage,
+  }
+
   $: colorUsedInProject = {};
   $: filteredColorUsedInProject = {};
   $: colorUsedInDir = {};
@@ -22,6 +27,7 @@
   $: relativeDir = "";
   $: isLoading = false;
   $: searchValue = "";
+  $: sortMethod = "";
   let mode: Mode = Mode.CurrentFile;
 
   function reload() {
@@ -51,14 +57,14 @@
   }
 
   $: onModeChange(mode);
-  $: filterBySearchValue(searchValue);
+  $: filterBySearchValue(searchValue, mode);
 
   function onModeChange(mode: Mode) {
     isLoading = true;
     tsvscode.postMessage({ type: "changeMode", value: mode });
   }
 
-  function filterBySearchValue(value: string): void {
+  function filterBySearchValue(value: string, mode: Mode): void {
     console.log(value);
     if (!value) {
       filteredColorUsedInFile = new Map(colorUsedInFile);
@@ -94,6 +100,8 @@
       );
     }
   }
+
+  function sortByMethod(method: SortMethod) {}
 
   onMount(() => {
     // Listen for messages from the extension
@@ -150,11 +158,37 @@
     <h1>Color Usage Summary</h1>
     <Reload {reload} />
   </div>
-  <select class="select" bind:value={mode}>
-    <option value={Mode.CurrentFile}>Current File</option>
-    <option value={Mode.CurrentProject}>Current Project</option>
-    <option value={Mode.CustomDirectory}>Custom Directory</option>
-  </select>
+  <div class="row">
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <div
+      class="mode-item"
+      style={mode === Mode.CurrentFile ? "border-bottom-color: white;" : ""}
+      on:click={() => (mode = Mode.CurrentFile)}
+    >
+      File
+    </div>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <div
+      class="mode-item"
+      style={mode === Mode.CurrentProject ? "border-bottom-color: white;" : ""}
+      on:click={() => (mode = Mode.CurrentProject)}
+    >
+      Project
+    </div>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <div
+      class="mode-item"
+      style={mode === Mode.CustomDirectory ? "border-bottom-color: white;" : ""}
+      on:click={() => (mode = Mode.CustomDirectory)}
+    >
+      Custom
+    </div>
+  </div>
+  {#if mode === Mode.CustomDirectory && relativeDir}
+    <div class="row">
+      <div class="dir-path">{relativeDir}</div>
+    </div>
+  {/if}
   <div class="row">
     <input
       type="text"
@@ -162,6 +196,10 @@
       placeholder="Search"
       bind:value={searchValue}
     />
+  </div>
+  <div class="row sort-row">
+    <div class="sort-button">Color</div>
+    <div class="sort-button">Usage</div>
   </div>
   {#if mode === Mode.CurrentProject}
     <ColorUsageInProject
@@ -202,5 +240,22 @@
   }
   .row {
     margin-bottom: 10px;
+    display: flex;
+  }
+  .dir-path {
+    color: orange;
+  }
+  .sort-row {
+    justify-content: space-between;
+  }
+  .sort-button {
+    cursor: pointer;
+  }
+  .mode-item {
+    flex: 1;
+    text-align: center;
+    margin-top: 10px;
+    padding-bottom: 3px;
+    border-bottom: 2px solid transparent;
   }
 </style>
