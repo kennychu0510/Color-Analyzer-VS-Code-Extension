@@ -9,15 +9,15 @@
 <br>
 Demo:
 <br>
-<img src="./demo/demo.gif">
+<img src="demo.gif">
 <br>
 
 1. Analyze by file
-   <img src="./demo/file1.png">
+   <img src="file1.png">
    <br>
 2. Analyze by project
-   <img src="./demo/byProject.png">
+   <img src="byProject.png">
    <br>
 3. Analyze by selected directory
-   <img src="./demo/custom1.png">
-   <img src="./demo/custom2.png">
+   <img src="custom1.png">
+   <img src="custom2.png">
