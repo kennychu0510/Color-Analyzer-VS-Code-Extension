@@ -77,4 +77,16 @@ describe("getColorUsedInContent", () => {
     const result = getColorUsedInContent(content);
     expect(result).toEqual(expected);
   });
+
+  test("rgb colors", () => {
+    const content = "rgb(0,0,0)";
+    const result = getColorUsedInContent(content);
+    expect(result.has("rgb(0,0,0)")).toBeTruthy();
+  });
+
+  test("rgba colors", () => {
+    const content = "rgba(0,0,0,1)";
+    const result = getColorUsedInContent(content);
+    expect(result.has("rgba(0,0,0,1)")).toBeTruthy();
+  });
 });

@@ -1,18 +1,18 @@
-import * as assert from 'assert';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as sinon from 'sinon';
-import * as vscode from 'vscode';
-
-const features = {
-  styleExtraction: 'styles-extraction',
-  copyStyles: 'copy-styles',
-  removeStyles: 'remove-styles',
-  batchClean: 'batchClean',
-} as const;
+import * as assert from "assert";
+import * as fs from "fs";
+import * as path from "path";
+import * as sinon from "sinon";
+import * as vscode from "vscode";
 
 // get current working folder path
-const workspaceFolder = path.join(__dirname, '..', '..', 'src', 'test', 'resources');
+const workspaceFolder = path.join(
+  __dirname,
+  "..",
+  "..",
+  "src",
+  "test",
+  "resources"
+);
 
 //sleep function
 function sleep(ms?: number) {
