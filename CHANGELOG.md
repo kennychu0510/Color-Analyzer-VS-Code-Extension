@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.1.0] - 2024-05-21
+
+- Revise readme
+
 ## [1.0.9] - 2024-05-21
 
 - Fix refresh
