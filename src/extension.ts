@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { SidebarProvider } from "./SidebarProvider";
+import { Mode, SidebarProvider } from "./SidebarProvider";
 import * as path from "path";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -13,7 +13,9 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.onDidChangeActiveTextEditor((editor) => {
       if (!editor) return;
       sidebarProvider._editor = editor;
-      sidebarProvider.refresh();
+      if (sidebarProvider.mode === Mode.CurrentFile) {
+        sidebarProvider.refresh();
+      }
     }),
     vscode.workspace.onDidSaveTextDocument((event) => {
       sidebarProvider.refresh();
