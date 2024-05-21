@@ -29,6 +29,11 @@
         "command": "ColorAnalyzer.analyzeFolder",
         "title": "Analyze Color Usage in Folder",
         "category": "Color Analyzer"
+      },
+      {
+        "command": "ColorAnalyzer.analyzeFile",
+        "title": "Analyze Color Usage in File",
+        "category": "Color Analyzer"
       }
     ],
     "viewsContainers": {

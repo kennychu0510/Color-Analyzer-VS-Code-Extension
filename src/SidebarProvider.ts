@@ -83,7 +83,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   public analyzeFolder(selectedDir: string) {
     this.mode = Mode.CustomDirectory;
     this.customDir = selectedDir;
-    this.updateWebviewForColorUsedInDir(selectedDir);
+    return this.updateWebviewForColorUsedInDir(selectedDir);
   }
 
   private updateWebviewForColorUsedInDir(dirPath: string) {
@@ -99,6 +99,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         ),
       }),
     });
+    return colorUsed;
   }
 
   public startLoading() {
@@ -118,8 +119,9 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     });
   }
 
-  private updateWebviewForColorUsedInFile() {
-    const path = vscode.window.activeTextEditor?.document.uri.fsPath;
+  public updateWebviewForColorUsedInFile(selectedPath?: string) {
+    const path =
+      selectedPath ?? vscode.window.activeTextEditor?.document.uri.fsPath;
     if (!path) return;
     const colorUsed = this.getColorsUsedInEditor();
     this._view?.webview.postMessage({
@@ -129,6 +131,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         colorUsage: Array.from(colorUsed.entries()),
       }),
     });
+    return colorUsed;
   }
 
   public getColorUsedInDir(dirPath: string) {

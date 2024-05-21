@@ -23,10 +23,18 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand(
       "ColorAnalyzer.analyzeFolder",
       async (selectedDir: vscode.Uri | undefined) => {
-        if (!selectedDir) return;
+        if (!selectedDir) return "no folder selected";
         sidebarProvider.startLoading();
         await vscode.commands.executeCommand("ColorAnalyzer-sidebar.focus");
-        sidebarProvider.analyzeFolder(selectedDir.fsPath);
+        return sidebarProvider.analyzeFolder(selectedDir.fsPath);
+      }
+    ),
+    vscode.commands.registerCommand(
+      "ColorAnalyzer.analyzeFile",
+      (selectedDir: vscode.Uri | undefined) => {
+        return sidebarProvider.updateWebviewForColorUsedInFile(
+          selectedDir?.fsPath
+        );
       }
     ),
   ];
