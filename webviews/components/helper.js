@@ -65,7 +65,7 @@ export function filterColorUsageByValueInFile(map, value) {
 export function filterObjByValue(obj, value) {
   return Object.keys(obj).reduce((acc, color) => {
     if (color.toLowerCase().includes(value.toLowerCase())) {
-      acc[color] = colorUsedInProject[color];
+      acc[color] = obj[color];
     }
     return acc;
   }, {});

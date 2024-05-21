@@ -180,6 +180,8 @@
             );
             projectDir = data.projectDir;
             isLoading = false;
+            filterBySearchValue(searchValue, mode);
+            sortByMethod(sortMethod, mode);
           }
           break;
         case "onReceiveColorsUsedInFile":
@@ -188,6 +190,8 @@
             colorUsedInFile = new Map(data.colorUsage);
             filteredColorUsedInFile = new Map(data.colorUsage);
             isLoading = false;
+            filterBySearchValue(searchValue, mode);
+            sortByMethod(sortMethod, mode);
           }
           break;
         case "onReceiveColorsUsedInDir":
@@ -199,6 +203,8 @@
             isLoading = false;
             relativeDir = data.relativeDir;
             mode = Mode.CustomDirectory;
+            filterBySearchValue(searchValue, mode);
+            sortByMethod(sortMethod, mode);
           }
           break;
         case "changeMode":

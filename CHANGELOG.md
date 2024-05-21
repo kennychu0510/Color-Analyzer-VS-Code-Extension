@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.0.9] - 2024-05-21
+
+- Fix refresh
+- Fix search in project and directory
+- Added integration tests
+
 ## [1.0.8] - 2024-05-20
 
 - Updated readme and demo images
