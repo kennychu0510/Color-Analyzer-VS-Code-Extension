@@ -1,9 +1,11 @@
 <script lang="ts">
+  import ColorIcon from './ColorIcon.svelte';
+
   export let colorUsed: Map<string, number> = new Map();
   export let doneUpdate = false;
 
   function onColorClick(color: string) {
-    tsvscode.postMessage({ type: "searchForColor", value: color });
+    tsvscode.postMessage({ type: 'searchForColor', value: color });
   }
 </script>
 
@@ -12,7 +14,7 @@
     {#each Array.from(colorUsed.keys()) as color}
       <div class="color-item">
         <div class="row">
-          <div class="color" style="background-color: {color};"></div>
+          <ColorIcon {color} />
           <!-- svelte-ignore a11y-click-events-have-key-events -->
           <p on:click={() => onColorClick(color)} class="color-label">
             {color}

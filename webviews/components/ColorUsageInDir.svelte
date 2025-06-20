@@ -1,14 +1,16 @@
 <script lang="ts">
+  import ColorIcon from './ColorIcon.svelte';
+
   export let colorUsed: { [color: string]: string[] } = {};
-  export let rootDir: string = "";
-  export let relativeDir: string = "";
+  export let rootDir: string = '';
+  export let relativeDir: string = '';
   export let doneUpdate = false;
 
-  let showColorDetail = "";
+  let showColorDetail = '';
 
   function onClickColor(color: string) {
     if (showColorDetail === color) {
-      showColorDetail = "";
+      showColorDetail = '';
       return;
     }
     showColorDetail = color;
@@ -17,7 +19,7 @@
   function handleOnClickPath(path: string, color: string) {
     return () => {
       tsvscode.postMessage({
-        type: "goToColor",
+        type: 'goToColor',
         value: {
           path,
           color,
@@ -37,7 +39,7 @@
     {#each Object.keys(colorUsed) as color}
       <div class="color-item">
         <div class="row">
-          <div class="color" style="background-color: {color};"></div>
+          <ColorIcon {color} />
           <!-- svelte-ignore a11y-click-events-have-key-events -->
           <p on:click={() => onClickColor(color)} class="color-label">
             {color}
@@ -49,11 +51,8 @@
         <div class="file-path-container">
           {#each colorUsed[color] as filePath}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <p
-              on:click={handleOnClickPath(filePath, color)}
-              class="file-path-item"
-            >
-              {filePath.replace(rootDir, "")}
+            <p on:click={handleOnClickPath(filePath, color)} class="file-path-item">
+              {filePath.replace(rootDir, '')}
             </p>
           {/each}
         </div>
@@ -78,12 +77,7 @@
     margin-bottom: 10px;
     justify-content: space-between;
   }
-  .color {
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
-    border-radius: 100%;
-  }
+
   .color-label:hover {
     text-decoration: underline;
     cursor: pointer;

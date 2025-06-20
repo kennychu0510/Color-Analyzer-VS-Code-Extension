@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.1.1] - 2025-06-20
+
+- Added feature to copy color to clipboard whe clicking on icon
+
 ## [1.1.0] - 2024-05-21
 
 - Revise readme
