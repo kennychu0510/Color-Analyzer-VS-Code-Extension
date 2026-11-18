@@ -1,11 +1,15 @@
 import svelte from "rollup-plugin-svelte";
+import css from "rollup-plugin-css-only";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
-import { terser } from "rollup-plugin-terser";
+import terser from "@rollup/plugin-terser";
 import sveltePreprocess from "svelte-preprocess";
 import typescript from "@rollup/plugin-typescript";
 import path from "path";
 import fs from "fs";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -25,13 +29,10 @@ export default fs
             plugins: [
 
                 svelte({
-                    // enable run-time checks when not in production
-                    dev: !production,
-                    // we'll extract any component CSS out into
-                    // a separate file - better for performance
-                    css: (css) => {
-                        css.write(name + ".css");
+                    compilerOptions: {
+                        dev: !production,
                     },
+                    emitCss: true,
                     preprocess: sveltePreprocess(),
                     onwarn: (warning, handler) => {
                         const { code, frame } = warning;
@@ -41,6 +42,7 @@ export default fs
                         handler(warning);
                     },
                 }),
+                css({ output: `out/compiled/${name}.css` }),
 
 
                 // If you have external dependencies installed from
